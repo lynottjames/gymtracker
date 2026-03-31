@@ -49,8 +49,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'workoutId is required' }, { status: 400 })
 
     const parsedSets = parseSetsInput(rawSets ?? [])
-    if (!parsedSets.ok)
-      return NextResponse.json({ error: parsedSets.message }, { status: 400 })
+    if (parsedSets.ok === false) {
+        return NextResponse.json(
+          { error: parsedSets.message },
+            { status: 400 }
+      )
+    }
 
     const { sets: normalizedSets } = parsedSets
 
