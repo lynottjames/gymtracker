@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Workout {
+  id        String     @id @default(cuid())
+  date      DateTime   @default(now())
+  name      String
+  exercises Exercise[]
+}
+
+model Exercise {
+  id        String  @id @default(cuid())
+  name      String
+  workoutId String
+  workout   Workout @relation(fields: [workoutId], references: [id])
+  sets      Set[]
+}
+
+model Set {
+  id         String   @id @default(cuid())
+  reps       Int
+  weight     Float
+  exerciseId String
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+}

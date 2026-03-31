@@ -1,0 +1,124 @@
+.sidebar {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  box-sizing: border-box;
+  width: 240px;
+  height: 100vh;
+  flex-direction: column;
+  padding: 1rem 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+}
+
+.brand {
+  padding: 0 1rem 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #c8ff00;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+  padding: 0 0.5rem;
+}
+
+.link {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  background-color: transparent;
+  border-left: 3px solid transparent;
+  box-sizing: border-box;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.linkInactive:hover {
+  background-color: var(--surface-2);
+  color: #ffffff;
+}
+
+.linkActive {
+  color: #c8ff00;
+  background-color: var(--accent-dim);
+  border-left-color: #c8ff00;
+}
+
+.sidebarFooter {
+  margin-top: auto;
+  padding: 1rem 1.25rem 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.bottomNav {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  box-sizing: border-box;
+  height: 64px;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+.bottomLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.bottomLink:hover {
+  color: var(--text);
+}
+
+.bottomLinkActive {
+  color: #c8ff00;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    display: flex;
+  }
+
+  .bottomNav {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .sidebar {
+    display: none;
+  }
+
+  .bottomNav {
+    display: flex;
+  }
+}
