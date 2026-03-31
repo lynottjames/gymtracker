@@ -147,7 +147,7 @@ export default function LogPage() {
       }
 
       const parsed = parseExerciseSets(ex.sets)
-      if (!parsed.ok) {
+      if (parsed.ok === false) {
         setSubmitError(`Exercise “${ex.name.trim() || `#${i + 1}`}”: ${parsed.message}`)
         return
       }
@@ -180,7 +180,7 @@ export default function LogPage() {
       for (let i = 0; i < exercises.length; i += 1) {
         const ex = exercises[i]
         const parsed = parseExerciseSets(ex.sets)
-        if (!parsed.ok) {
+        if (parsed.ok === false) {
           setSubmitError(`Exercise “${ex.name}”: ${parsed.message}`)
           return
         }
