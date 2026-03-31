@@ -1,13 +1,14 @@
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/prisma'
 
-interface RouteContext {
-  params: Promise<{ id: string }>
-}
-
-export async function GET(_: Request, context: RouteContext) {
+export async function GET(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = await context.params
+    const { id } = await params
 
     if (!id)
       return NextResponse.json({ error: 'Workout id is required' }, { status: 400 })
@@ -33,9 +34,12 @@ export async function GET(_: Request, context: RouteContext) {
   }
 }
 
-export async function DELETE(_: Request, context: RouteContext) {
+export async function DELETE(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = await context.params
+    const { id } = await params
 
     if (!id)
       return NextResponse.json({ error: 'Workout id is required' }, { status: 400 })
