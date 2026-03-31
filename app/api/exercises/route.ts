@@ -12,9 +12,11 @@ interface CreateExerciseBody {
   sets?: SetInput[]
 }
 
-function parseSetsInput(
-  sets: SetInput[] | undefined
-): { ok: true; sets: { reps: number; weight: number }[] } | { ok: false; message: string } {
+type ParseResult =
+  | { ok: true; sets: { reps: number; weight: number }[] }
+  | { ok: false; message: string }
+
+function parseSetsInput(sets: SetInput[] | undefined): ParseResult {
   if (!Array.isArray(sets))
     return { ok: false, message: 'sets must be an array' }
 
