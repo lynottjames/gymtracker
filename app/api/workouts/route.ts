@@ -1,11 +1,18 @@
 export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
 import { prisma } from '../../../lib/prisma'
 
 export async function GET() {
+  const session = await auth()
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const workouts = await prisma.workout.findMany({
+      where: { userId: session.user.id },
       orderBy: { date: 'desc' },
       include: {
         exercises: {
@@ -27,6 +34,11 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const session = await auth()
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const body = (await request.json()) as { name?: string; date?: string }
     const { name, date } = body
@@ -52,6 +64,7 @@ export async function POST(request: Request) {
       data: {
         name: name.trim(),
         date: parsedDate,
+        userId: session.user.id,
       },
     })
 

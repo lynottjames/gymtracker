@@ -112,6 +112,16 @@ async function seed() {
   await prisma.exercise.deleteMany()
   await prisma.workout.deleteMany()
 
+  const seedOwner = await prisma.user.upsert({
+    where: { email: 'seed@gymtracker.local' },
+    create: {
+      email: 'seed@gymtracker.local',
+      password: 'UNUSED_SEED_ONLY',
+      name: 'Seed data',
+    },
+    update: {},
+  })
+
   const weekCount = 6
   const sessionsPerWeek = 4
 
@@ -127,6 +137,7 @@ async function seed() {
         data: {
           name: workoutName,
           date,
+          userId: seedOwner.id,
           exercises: {
             create: templates.map((template) => ({
               name: template.name,

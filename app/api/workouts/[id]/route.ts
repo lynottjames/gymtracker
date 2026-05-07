@@ -1,20 +1,26 @@
 export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
 import { prisma } from '../../../../lib/prisma'
 
 export async function GET(
   _: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const session = await auth()
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const { id } = await params
 
     if (!id)
       return NextResponse.json({ error: 'Workout id is required' }, { status: 400 })
 
-    const workout = await prisma.workout.findUnique({
-      where: { id },
+    const workout = await prisma.workout.findFirst({
+      where: { id, userId: session.user.id },
       include: {
         exercises: {
           include: {
@@ -38,14 +44,19 @@ export async function DELETE(
   _: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const session = await auth()
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const { id } = await params
 
     if (!id)
       return NextResponse.json({ error: 'Workout id is required' }, { status: 400 })
 
-    const existingWorkout = await prisma.workout.findUnique({
-      where: { id },
+    const existingWorkout = await prisma.workout.findFirst({
+      where: { id, userId: session.user.id },
       select: { id: true },
     })
 

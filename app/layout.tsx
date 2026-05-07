@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { GeistMono, GeistSans } from 'geist/font'
 import { Nav } from '../components/Nav'
+import { SessionProviderWrapper } from '../components/session-provider'
 import './globals.css'
 
 interface RootLayoutProps {
@@ -19,7 +20,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           .app-main {
             margin-left: 0;
             padding: 32px;
-            padding-bottom: calc(32px + 64px);
+            padding-bottom: calc(32px + 104px);
             box-sizing: border-box;
             min-height: 100vh;
           }
@@ -30,10 +31,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
             }
           }
         `}</style>
-        <div className="app-shell">
-          <Nav />
-          <main className="app-main">{children}</main>
-        </div>
+        <SessionProviderWrapper>
+          <div className="app-shell">
+            <Nav />
+            <main className="app-main">{children}</main>
+          </div>
+        </SessionProviderWrapper>
       </body>
     </html>
   )

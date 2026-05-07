@@ -1,3 +1,5 @@
+// Landing page that fetches workouts and shows headline stats, a random estimated 1RM highlight, recent sessions, and links to log, dashboard, and history.
+
 'use client'
 
 import Link from 'next/link'

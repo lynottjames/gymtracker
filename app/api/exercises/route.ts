@@ -1,6 +1,7 @@
 export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
+import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 
 interface SetInput {
@@ -42,6 +43,11 @@ function parseSetsInput(sets: SetInput[] | undefined): ParseResult {
 }
 
 export async function POST(request: Request) {
+  const session = await auth()
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const body = (await request.json()) as CreateExerciseBody
     const { name, workoutId, sets: rawSets } = body
@@ -63,8 +69,8 @@ export async function POST(request: Request) {
     const { sets: normalizedSets } = parsedSets
 
     const exercise = await prisma.$transaction(async (tx) => {
-      const workout = await tx.workout.findUnique({
-        where: { id: workoutId.trim() },
+      const workout = await tx.workout.findFirst({
+        where: { id: workoutId.trim(), userId: session.user.id },
         select: { id: true },
       })
 

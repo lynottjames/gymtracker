@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { LayoutDashboard, PlusSquare, ScrollText } from 'lucide-react'
+import { LayoutDashboard, LogOut, PlusSquare, ScrollText } from 'lucide-react'
+import { signOut, useSession } from 'next-auth/react'
 import styles from './Nav.module.css'
 
 const navItems = [
@@ -25,8 +26,21 @@ function formatToday(): string {
   }).format(new Date())
 }
 
+function userDisplay(user: {
+  name?: string | null
+  email?: string | null
+}): string {
+  const trimmed = user.name?.trim()
+  if (trimmed) return trimmed
+  if (user.email) return user.email
+  return ''
+}
+
 export function Nav() {
   const pathname = usePathname()
+  const { data: session } = useSession()
+  const viewer = session?.user
+  const viewerLabel = viewer ? userDisplay(viewer) : ''
 
   return (
     <>
@@ -50,27 +64,57 @@ export function Nav() {
             )
           })}
         </div>
-        <footer className={styles.sidebarFooter}>{formatToday()}</footer>
+        <footer className={styles.sidebarFooter}>
+          <div className={styles.sidebarDate}>{formatToday()}</div>
+          {viewerLabel ? (
+            <>
+              <p className={styles.userIdentity}>{viewerLabel}</p>
+              <button
+                type="button"
+                className={styles.signOutButton}
+                onClick={() => signOut({ callbackUrl: '/login' })}
+              >
+                <LogOut size={20} aria-hidden strokeWidth={1.75} />
+                <span>Sign out</span>
+              </button>
+            </>
+          ) : null}
+        </footer>
       </aside>
 
       <nav className={styles.bottomNav} aria-label="Mobile navigation">
-        {navItems.map((item) => {
-          const Icon = item.icon
-          const active = pathActive(pathname, item.href)
-          const className = [styles.bottomLink, active ? styles.bottomLinkActive : '']
-            .filter(Boolean)
-            .join(' ')
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={className}
-              aria-label={item.label}
+        <div className={styles.bottomNavMain}>
+          {navItems.map((item) => {
+            const Icon = item.icon
+            const active = pathActive(pathname, item.href)
+            const className = [styles.bottomLink, active ? styles.bottomLinkActive : '']
+              .filter(Boolean)
+              .join(' ')
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={className}
+                aria-label={item.label}
+              >
+                <Icon size={24} aria-hidden strokeWidth={1.75} />
+              </Link>
+            )
+          })}
+        </div>
+        {viewerLabel ? (
+          <div className={styles.bottomNavAccount}>
+            <span className={styles.bottomUserIdentity}>{viewerLabel}</span>
+            <button
+              type="button"
+              className={styles.bottomSignOut}
+              aria-label="Sign out"
+              onClick={() => signOut({ callbackUrl: '/login' })}
             >
-              <Icon size={24} aria-hidden strokeWidth={1.75} />
-            </Link>
-          )
-        })}
+              <LogOut size={24} aria-hidden strokeWidth={1.75} />
+            </button>
+          </div>
+        ) : null}
       </nav>
     </>
   )
